@@ -1,5 +1,5 @@
 /**
- * Sample React Native App
+ * based on the Sample React Native App
  * https://github.com/facebook/react-native
  */
 'use strict';
@@ -16,7 +16,7 @@ import React, {
 
 var ALL_REPORTS_REQUEST_URL = 'http://311api.cityofchicago.org/open311/v2/requests.json?service_code=4fd3b167e750846744000005'
 
-class AwesomeProject extends Component {
+class Mender extends Component {
 // add some initial state
   constructor(props) {
     super(props);
@@ -111,4 +111,4 @@ var styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('AwesomeProject', () => AwesomeProject);
+AppRegistry.registerComponent('Mender', () => Mender);
