@@ -14,9 +14,6 @@ import React, {
   View
 } from 'react-native';
 
-var MOCKED_REPORT_DATA = [
-  {title: 'Title', year: '2015', posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'}},
-];
 var ALL_REPORTS_REQUEST_URL = 'http://311api.cityofchicago.org/open311/v2/requests.json?service_code=4fd3b167e750846744000005'
 
 class AwesomeProject extends Component {
@@ -42,10 +39,8 @@ class AwesomeProject extends Component {
          dataObject = responseData;
        AlertIOS.alert(
               "fetch response",
-              //"thing -> " + responseData[0].lat, //works and clarifies the problem
               "thing2 -> " + length + ' ' + dataObject[0].lat
           )
-
    this.setState({
          dataSource : this.state.dataSource.cloneWithRows(dataObject),
          loaded: true,
@@ -64,7 +59,6 @@ class AwesomeProject extends Component {
    );
  }
  renderLoadingView() {
-   console.warn('in renderLoadingView');
   return (
     <View style={styles.container}>
       <Text>
@@ -74,16 +68,9 @@ class AwesomeProject extends Component {
   );
 }
   render() {
-  var reports = MOCKED_REPORT_DATA[0];
-
-   console.warn('in render() this.state.loaded: ' + this.state.loaded );
-
-
   if (!this.state.loaded) {
-    console.warn('!this.state.loaded so returing this.renderLoadingView');
     return this.renderLoadingView();
   }
-  console.warn('about to return in render()');
   return (
       <ListView
         dataSource={this.state.dataSource}
@@ -93,7 +80,6 @@ class AwesomeProject extends Component {
     );
   }
 } // end of class AwesomeProject
-
 
 var styles = StyleSheet.create({
 
