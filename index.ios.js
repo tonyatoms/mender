@@ -4,9 +4,11 @@
  */
 'use strict';
 import React, {
+  AlertIOS,
   AppRegistry,
   Component,
   Image,
+  ListView,
   StyleSheet,
   Text,
   View
@@ -15,53 +17,90 @@ import React, {
 var MOCKED_REPORT_DATA = [
   {title: 'Title', year: '2015', posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'}},
 ];
-var REQUEST_URL = 'http://311api.cityofchicago.org/open311/v2/requests.json?service_code=4fd3b167e750846744000005'
+var ALL_REPORTS_REQUEST_URL = 'http://311api.cityofchicago.org/open311/v2/requests.json?service_code=4fd3b167e750846744000005'
 
 class AwesomeProject extends Component {
 // add some initial state
   constructor(props) {
     super(props);
     this.state = {
-      reports: null,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2,
+      }),
+      loaded: false,
     };
   }
   componentDidMount() {
-      this.fetchData();
+      this.fetchAllReports();
   }
-  fetchData() {
-   fetch(REQUEST_URL)
+ fetchAllReports() {
+   fetch(ALL_REPORTS_REQUEST_URL)
      .then((response) => response.json())
      .then((responseData) => {
-       this.setState({
-         reports: responseData,
+       var dataObject = {};
+       var length = responseData.length;
+         dataObject = responseData;
+       AlertIOS.alert(
+              "fetch response",
+              //"thing -> " + responseData[0].lat, //works and clarifies the problem
+              "thing2 -> " + length + ' ' + dataObject[0].lat
+          )
+
+   this.setState({
+         dataSource : this.state.dataSource.cloneWithRows(dataObject),
+         loaded: true,
        });
      })
      .done();
  }
-
+ renderReport(report) {
+  //console.warn('in renderReport report: ' + report );
+   return (
+     <View style={styles.container}>
+      <View style={styles.rightContainer}>
+       <Text style={styles.title}>{report.lat}</Text>
+       </View>
+     </View>
+   );
+ }
+ renderLoadingView() {
+   console.warn('in renderLoadingView');
+  return (
+    <View style={styles.container}>
+      <Text>
+        Loading data...
+      </Text>
+    </View>
+  );
+}
   render() {
   var reports = MOCKED_REPORT_DATA[0];
 
-  //console.warn(this.state.reports);
+   console.warn('in render() this.state.loaded: ' + this.state.loaded );
 
 
+  if (!this.state.loaded) {
+    console.warn('!this.state.loaded so returing this.renderLoadingView');
+    return this.renderLoadingView();
+  }
+  console.warn('about to return in render()');
   return (
-    <View style={styles.container}>
-      <Image
-        source={{uri: reports.posters.thumbnail}}
-        style={styles.thumbnail}
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={this.renderReport}
+        style={styles.listView}
       />
-        <View style={styles.rightContainer}>
-          <Text style={styles.title}>{reports.title}</Text>
-          <Text style={styles.year}>{reports.year}</Text>
-        </View>
-      </View>
     );
   }
 } // end of class AwesomeProject
 
+
 var styles = StyleSheet.create({
 
+  listView: {
+     paddingTop: 20,
+     backgroundColor: '#F5FCFF',
+   },
   container: {
     flex: 1,
     flexDirection: 'row',
